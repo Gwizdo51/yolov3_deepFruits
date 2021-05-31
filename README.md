@@ -28,7 +28,7 @@ deepFruits_for_training/
             <all labels of testing images in txt format>
 ```
 
-chaque fichier image du dossier images est annoté par un fichier texte du même nom dans le dossier labels. Comme les annotations fournies par le dataset de deepFruits ne sont pas celles que YOLO attend, il faut les réécrire. Il faut également convertir toutes les images en format JPEG, supprimer les images sans leurs annotations et les annotations sans leurs images, et redonner des bonnes classes au labels (presque tous les fruits sont annotés avec la classe "rockmelon").
+chaque fichier image du dossier images est annoté par un fichier texte du même nom dans le dossier labels. Comme les annotations fournies par le dataset de deepFruits ne sont pas celles que YOLO attend, il faut les réécrire. Il faut également convertir toutes les images en format JPEG, supprimer les images sans leurs annotations et les annotations sans leurs images, et redonner des bonnes nombres au labels (presque tous les fruits sont annotés avec la classe "rockmelon").
 
 ## cloner le contenu du github yolov3 dans le dossier actuel
 
