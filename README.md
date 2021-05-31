@@ -47,7 +47,7 @@ On pourra alors utiliser detect.py pour effectuer de nouvelles inférences, en u
 
 Je n'ai pu que commencer le fichier qui permet de générer un nouveau dataset pour YOLO.
 
-Il permet de rassembler toutes les images de fruits aux bons endroits (train et test), il les converti en jpeg, et extracte les annotations des fichiers test_RGB.txt et train_RGB.txt pour créer un nouveau fichier texte par ligne.
+Il permet de rassembler toutes les images de fruits aux bons endroits (train et test), il les converti en jpeg (librairie Pillow), et extracte les annotations des fichiers test_RGB.txt et train_RGB.txt pour créer un nouveau fichier texte par ligne.
 
 Il me reste à convertir **x1, y1, x2, y2** en **center_x, center_y, width, height**, normalisé de 0 à 1, pour chaque box annotée de chaque image, et à changer le numéro de classe pour certains fruits.
 
