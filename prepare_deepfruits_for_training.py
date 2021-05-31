@@ -176,5 +176,3 @@ if __name__ == "__main__":
         print("preparing dataset ...")
         perpare_dataset(args.input_dir, args.output_dir)
         print("DeepFruits dataset prepared for training.")
-
-    create_labels(args.input_dir, args.output_dir)
