@@ -64,13 +64,13 @@ def create_labels(original_dir, new_dir, verbose):
 
     # 1: capsicum, 2: rockmelon, 3: apple, 4: avocado, 5: mango, 6: orange, 7: strawberry
     fruits_classes = {
-        'apple': "3",
-        'avocado': "4",
-        'capsicum': "1",
-        'mango': "5",
-        'orange': "6",
-        'rockmelon': "2",
-        'strawberry': "7"
+        'apple': "2",
+        'avocado': "3",
+        'capsicum': "0",
+        'mango': "4",
+        'orange': "5",
+        'rockmelon': "1",
+        'strawberry': "6"
     }
 
     datasets_dir_path = Path(original_dir) / "datasets"
