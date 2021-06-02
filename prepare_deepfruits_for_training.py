@@ -197,9 +197,9 @@ def compute_labels(new_dir, verbose):
     steps = ["test", "train"]
     for step in steps:
     
-        test_file_names = [name.split(".")[0] for name in next(os.walk(Path(new_dir) / "images" / step))[2]]
+        file_names = [name.split(".")[0] for name in next(os.walk(Path(new_dir) / "images" / step))[2]]
 
-        for file_name in test_file_names:
+        for file_name in file_names:
 
             print_erase(file_name, last_print) if verbose else ...
             last_print = file_name
