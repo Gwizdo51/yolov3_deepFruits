@@ -1,2 +1,3 @@
-deepFruits_dataset/*
-deepFruits_for_training/*
+deepFruits_dataset/
+deepFruits_for_training/
+yolov3/
