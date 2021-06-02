@@ -233,7 +233,37 @@ def compute_labels(new_dir, verbose):
     print() if verbose else ...
 
 
-def perpare_dataset(original_dir, new_dir, verbose):
+def resize_images(new_dir, max_size, verbose):
+
+    last_print = ""
+    steps = ["test", "train"]
+    for step in steps:
+
+        for image_name in next(os.walk(Path(new_dir) / "images" / step))[2]:
+
+            image_file = Image.open(Path(new_dir) / "images" / step / image_name)
+            
+            if image_file.width > max_size or image_file.height > max_size:
+
+                print_erase(image_name, last_print) if verbose else ...
+                last_print = image_name
+
+                if image_file.width > image_file.height:
+                    new_width = max_size
+                    new_height = round(max_size * image_file.height / image_file.width)
+                elif image_file.width < image_file.height:
+                    new_width = round(max_size * image_file.width / image_file.height)
+                    new_height = max_size
+                else:
+                    new_width = max_size
+                    new_height = max_size
+                image_file.resize((new_width, new_height)).save(Path(new_dir) / "images" / step / image_name)
+
+    # resume normal print
+    print() if verbose else ...
+
+
+def perpare_dataset(original_dir, new_dir, max_size, verbose):
     """
     Function that transforms the deepFruit dataset into input that Yolov3 can understand,
     and copy the new dataset into the new_dir directory.
@@ -266,11 +296,19 @@ def perpare_dataset(original_dir, new_dir, verbose):
     compute_labels(new_dir, verbose)
     print("Done.") if verbose else ...
 
+    # resize each image to 640 pixels maximum
+    print("Resizing images ...") if verbose else ...
+    resize_images(new_dir, max_size, verbose)
+    print("Done.") if verbose else ...
+
+    # add a .yaml file
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--input_dir', '-i', type=str, default='deepFruits_dataset', help='original deepFruits dataset directory (defaults to "deepruits_dataset")')
     parser.add_argument('--output_dir', '-o', type=str, default='deepFruits_for_training', help='new directory name for the prepared deepFruits dataset (defaults to "deepFruits_for_training")')
+    parser.add_argument('--max_size', type=int, default=640, help='maximum height/width of the output images in pixels (defaults to 640)')
     parser.add_argument('--verbose', '-v', action='store_true', help='print advancement')
 
     args = parser.parse_args()
@@ -279,5 +317,5 @@ if __name__ == "__main__":
         print("DeepFruits dataset already prepared for training.")
     else:
         print("preparing dataset ...")
-        perpare_dataset(args.input_dir, args.output_dir, args.verbose)
+        perpare_dataset(args.input_dir, args.output_dir, args.max_size, args.verbose)
         print("DeepFruits dataset prepared for training.")
