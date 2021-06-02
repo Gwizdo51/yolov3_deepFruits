@@ -101,9 +101,8 @@ def create_labels(original_dir, new_dir, verbose):
                         new_label_file_lines_array[line_index][0],
                         new_label_file_lines_array[line_index][1],
                         new_label_file_lines_array[line_index][2],
-                        new_label_file_lines_array[line_index][3],
-                        "\n"
-                    ])
+                        new_label_file_lines_array[line_index][3]
+                    ]) + "\n"
                     lines_to_write.append(line_to_write)
                 with open(Path(new_dir) / "labels" / "test" / new_label_file_name, "w") as new_labels_file:
                     new_labels_file.writelines(lines_to_write)
@@ -127,9 +126,8 @@ def create_labels(original_dir, new_dir, verbose):
                             new_label_file_lines_array[line_index][0],
                             new_label_file_lines_array[line_index][1],
                             new_label_file_lines_array[line_index][2],
-                            new_label_file_lines_array[line_index][3],
-                            "\n"
-                        ])
+                            new_label_file_lines_array[line_index][3]
+                        ]) + "\n"
                         lines_to_write.append(line_to_write)
                     with open(Path(new_dir) / "labels" / "train" / new_label_file_name, "w") as new_labels_file:
                         new_labels_file.writelines(lines_to_write)
@@ -151,9 +149,8 @@ def create_labels(original_dir, new_dir, verbose):
                             new_label_file_lines_array[line_index][0],
                             new_label_file_lines_array[line_index][1],
                             new_label_file_lines_array[line_index][2],
-                            new_label_file_lines_array[line_index][3],
-                            "\n"
-                        ])
+                            new_label_file_lines_array[line_index][3]
+                        ]) + "\n"
                         lines_to_write.append(line_to_write)
                     with open(Path(new_dir) / "labels" / "train" / new_label_file_name, "w") as new_labels_file:
                         new_labels_file.writelines(lines_to_write)
@@ -194,6 +191,48 @@ def delete_useless_data(new_dir, verbose):
         os.remove(Path(new_dir) / "labels" / "train" / label_file)
 
 
+def compute_labels(new_dir, verbose):
+
+    last_print = ""
+    steps = ["test", "train"]
+    for step in steps:
+    
+        test_file_names = [name.split(".")[0] for name in next(os.walk(Path(new_dir) / "images" / step))[2]]
+
+        for file_name in test_file_names:
+
+            print_erase(file_name, last_print) if verbose else ...
+            last_print = file_name
+
+            lines_to_write = []
+            image_file = Image.open(Path(new_dir) / "images" / step / (file_name + ".jpg"))
+            width_px, height_px = image_file.size
+
+            with open(Path(new_dir) / "labels" / step / (file_name + ".txt"), "r") as label_file:
+                for line in label_file.read().split("\n")[:-1]:
+
+                    [fruit_class, x1, y1, x2, y2] = [int(item) for item in line.split()]
+                    center_x = round((x1 + x2) / (2 * width_px), 6)
+                    center_y = round((y1 + y2) / (2 * height_px), 6)
+                    width = round((x2 - x1) / width_px, 6)
+                    height = round((y2 - y1) / height_px, 6)
+
+                    line_to_write = " ".join([
+                        str(fruit_class),
+                        str(center_x),
+                        str(center_y),
+                        str(width),
+                        str(height)
+                    ]) + "\n"
+                    lines_to_write.append(line_to_write)
+            
+            with open(Path(new_dir) / "labels" / step / (file_name + ".txt"), "w") as label_file:
+                label_file.writelines(lines_to_write)
+
+    # resume normal print
+    print() if verbose else ...
+
+
 def perpare_dataset(original_dir, new_dir, verbose):
     """
     Function that transforms the deepFruit dataset into input that Yolov3 can understand,
@@ -223,10 +262,10 @@ def perpare_dataset(original_dir, new_dir, verbose):
     # get the images height and width, and compute the new values for the label files
     # from (object_class, x1, y1, x2, y2) to (object_class, center_x, center_y, width, height)
     # normalized between 0 and 1
+    print("Recomputing labels with image size ...") if verbose else ...
+    compute_labels(new_dir, verbose)
+    print("Done.") if verbose else ...
 
-    # create new classes for the different fruits
-    # 1: capsicum, 2: rockmelon, 3: apple, 4: avocado, 5: mango, 6: orange, 7: strawberry
-    
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -235,12 +274,6 @@ if __name__ == "__main__":
     parser.add_argument('--verbose', '-v', action='store_true', help='print advancement')
 
     args = parser.parse_args()
-
-    # verify input
-    # if args.input_dir[-1] != "/":
-    #     args.input_dir += "/"
-    # if args.output_dir[-1] != "/":
-    #     args.output_dir += "/"
 
     if os.path.exists(Path(args.output_dir)):
         print("DeepFruits dataset already prepared for training.")
