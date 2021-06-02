@@ -3,6 +3,23 @@ from pathlib import Path
 import argparse
 from PIL import Image
 import numpy as np
+import time
+
+
+def print_erase(sentence, last_print):
+    print("\r" + (" " * len(last_print)), end="\r")
+    print(sentence, end="", flush=True)
+
+def test(verbose):
+    prints = ["print 1 long", "print 2", "lol"]
+    last_print = ""
+    print('stuff')
+    for item in prints:
+        print_erase(item, last_print)
+        last_print = item
+        time.sleep(2)
+    print()
+    print("last")
 
 def create_folder_tree(new_dir):
     os.mkdir(Path(new_dir))
@@ -14,10 +31,11 @@ def create_folder_tree(new_dir):
     os.mkdir(Path(new_dir) / "labels" / "test")
 
 
-def convert_copy_images(original_dir, new_dir):
+def convert_copy_images(original_dir, new_dir, verbose):
 
     datasets_dir = original_dir + "datasets/"
     fruits_folder = next(os.walk(Path(datasets_dir)))[1]
+    last_print = ""
     for fruit_folder in fruits_folder:
         
         # convert and copy test images into new_directory/images/test
@@ -28,6 +46,8 @@ def convert_copy_images(original_dir, new_dir):
             fruit_image = Image.open(images_folder_path / png_fruit_image)
             jpg_fruit_image = png_fruit_image.split(".")[0] + ".jpg"
             # print(jpg_fruit_image)
+            print_erase(jpg_fruit_image, last_print) if verbose else ...
+            last_print = jpg_fruit_image
             # convert RGBA to RGB
             rgb_fruit_image = fruit_image.convert('RGB')
             rgb_fruit_image.save(Path(new_dir) / "images" / "test" / jpg_fruit_image)
@@ -40,12 +60,28 @@ def convert_copy_images(original_dir, new_dir):
             fruit_image = Image.open(images_folder_path / png_fruit_image)
             jpg_fruit_image = png_fruit_image.split(".")[0] + ".jpg"
             # print(jpg_fruit_image)
+            print_erase(jpg_fruit_image, last_print) if verbose else ...
+            last_print = jpg_fruit_image
             # convert RGBA to RGB
             rgb_fruit_image = fruit_image.convert('RGB')
             rgb_fruit_image.save(Path(new_dir) / "images" / "train" / jpg_fruit_image)
 
+    # resume normal prints:
+    print() if verbose else ...
+
 
 def create_labels(original_dir, new_dir):
+
+    # 1: capsicum, 2: rockmelon, 3: apple, 4: avocado, 5: mango, 6: orange, 7: strawberry
+    fruits_classes = {
+        'apple': "3",
+        'avocado': "4",
+        'capsicum': "1",
+        'mango': "5",
+        'orange': "6",
+        'rockmelon': "2",
+        'strawberry': "7"
+    }
 
     datasets_dir = original_dir + "datasets/"
     fruits_folder = next(os.walk(Path(datasets_dir)))[1]
@@ -68,7 +104,7 @@ def create_labels(original_dir, new_dir):
                 lines_to_write = []
                 for line_index in range(new_label_file_lines_array.shape[0]):
                     line_to_write = " ".join([
-                        new_label_file_lines_array[line_index][4],
+                        fruits_classes[fruit_folder],
                         new_label_file_lines_array[line_index][0],
                         new_label_file_lines_array[line_index][1],
                         new_label_file_lines_array[line_index][2],
@@ -76,8 +112,8 @@ def create_labels(original_dir, new_dir):
                         "\n"
                     ])
                     lines_to_write.append(line_to_write)
-                    with open(Path(new_dir) / "labels" / "test" / new_label_file_name, "w") as new_labels_file:
-                        new_labels_file.writelines(lines_to_write)
+                with open(Path(new_dir) / "labels" / "test" / new_label_file_name, "w") as new_labels_file:
+                    new_labels_file.writelines(lines_to_write)
 
         # get the train labels
         if fruit_folder == "capsicum":
@@ -92,7 +128,7 @@ def create_labels(original_dir, new_dir):
                     lines_to_write = []
                     for line_index in range(new_label_file_lines_array.shape[0]):
                         line_to_write = " ".join([
-                            "2",
+                            fruits_classes[fruit_folder],
                             new_label_file_lines_array[line_index][0],
                             new_label_file_lines_array[line_index][1],
                             new_label_file_lines_array[line_index][2],
@@ -100,8 +136,8 @@ def create_labels(original_dir, new_dir):
                             "\n"
                         ])
                         lines_to_write.append(line_to_write)
-                        with open(Path(new_dir) / "labels" / "train" / new_label_file_name, "w") as new_labels_file:
-                            new_labels_file.writelines(lines_to_write)
+                    with open(Path(new_dir) / "labels" / "train" / new_label_file_name, "w") as new_labels_file:
+                        new_labels_file.writelines(lines_to_write)
 
         else:
             with open(Path(datasets_dir) / fruit_folder / "train_RGB.txt", "r") as labels_file:
@@ -114,7 +150,7 @@ def create_labels(original_dir, new_dir):
                     lines_to_write = []
                     for line_index in range(new_label_file_lines_array.shape[0]):
                         line_to_write = " ".join([
-                            new_label_file_lines_array[line_index][4],
+                            fruits_classes[fruit_folder],
                             new_label_file_lines_array[line_index][0],
                             new_label_file_lines_array[line_index][1],
                             new_label_file_lines_array[line_index][2],
@@ -122,30 +158,30 @@ def create_labels(original_dir, new_dir):
                             "\n"
                         ])
                         lines_to_write.append(line_to_write)
-                        with open(Path(new_dir) / "labels" / "train" / new_label_file_name, "w") as new_labels_file:
-                            new_labels_file.writelines(lines_to_write)
+                    with open(Path(new_dir) / "labels" / "train" / new_label_file_name, "w") as new_labels_file:
+                        new_labels_file.writelines(lines_to_write)
 
 
-def perpare_dataset(original_dir, new_dir):
+def perpare_dataset(original_dir, new_dir, verbose):
     """
     Function that transforms the deepFruit dataset into input that Yolov3 can understand,
     and copy the new dataset into the new_dir directory.
     """
     
     # create the new directories
-    print("Creating folder ...")
+    print("Creating folder ...") if verbose else ...
     create_folder_tree(new_dir)
-    print("Done.")
+    print("Done.") if verbose else ...
 
     # convert all images from the original dataset into .jpg and copy them in the new dataset
-    print("Converting and copying images ...")
-    convert_copy_images(original_dir, new_dir)
-    print("Done.")
+    print("Converting and copying images ...") if verbose else ...
+    convert_copy_images(original_dir, new_dir, verbose)
+    print("Done.") if verbose else ...
 
     # create the new labels, but keep x1, y1, x2, y2 for now
-    print("Creating labels ...")
+    print("Creating labels ...") if verbose else ...
     create_labels(original_dir, new_dir)
-    print("Done.")
+    print("Done.") if verbose else ...
 
     # delete labels without images and images without labels
 
@@ -161,8 +197,18 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--input_dir', '-i', type=str, default='./deepFruits_dataset/', help='original deepFruits dataset directory')
     parser.add_argument('--output_dir', '-o', type=str, default='./deepFruits_for_training/', help='new directory name for the prepared deepFruits dataset')
+    parser.add_argument('--verbose', '-v', action='store_true', help='print advancement')
 
     args = parser.parse_args()
+
+    # print("super long stuff")
+    # time.sleep(1)
+    # print_erase("stuff", "")
+    # time.sleep(1)
+    # print_erase("ha", "stuff")
+    # time.sleep(1)
+    # print()
+    # print("babli")
 
     # verify input
     if args.input_dir[-1] != "/":
@@ -174,5 +220,5 @@ if __name__ == "__main__":
         print("DeepFruits dataset already prepared for training.")
     else:
         print("preparing dataset ...")
-        perpare_dataset(args.input_dir, args.output_dir)
+        perpare_dataset(args.input_dir, args.output_dir, args.verbose)
         print("DeepFruits dataset prepared for training.")
