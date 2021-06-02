@@ -10,16 +10,6 @@ def print_erase(sentence, last_print):
     print("\r" + (" " * len(last_print)), end="\r")
     print(sentence, end="", flush=True)
 
-def test(verbose):
-    prints = ["print 1 long", "print 2", "lol"]
-    last_print = ""
-    print('stuff')
-    for item in prints:
-        print_erase(item, last_print)
-        last_print = item
-        time.sleep(2)
-    print()
-    print("last")
 
 def create_folder_tree(new_dir):
     os.mkdir(Path(new_dir))
@@ -203,6 +193,7 @@ def delete_useless_data(new_dir, verbose):
         label_file += ".txt"
         os.remove(Path(new_dir) / "labels" / "train" / label_file)
 
+
 def perpare_dataset(original_dir, new_dir, verbose):
     """
     Function that transforms the deepFruit dataset into input that Yolov3 can understand,
@@ -239,8 +230,8 @@ def perpare_dataset(original_dir, new_dir, verbose):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input_dir', '-i', type=str, default='deepFruits_dataset/', help='original deepFruits dataset directory')
-    parser.add_argument('--output_dir', '-o', type=str, default='deepFruits_for_training/', help='new directory name for the prepared deepFruits dataset')
+    parser.add_argument('--input_dir', '-i', type=str, default='deepFruits_dataset', help='original deepFruits dataset directory (defaults to "deepruits_dataset")')
+    parser.add_argument('--output_dir', '-o', type=str, default='deepFruits_for_training', help='new directory name for the prepared deepFruits dataset (defaults to "deepFruits_for_training")')
     parser.add_argument('--verbose', '-v', action='store_true', help='print advancement')
 
     args = parser.parse_args()
