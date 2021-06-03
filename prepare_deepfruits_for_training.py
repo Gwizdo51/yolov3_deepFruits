@@ -305,6 +305,7 @@ def perpare_dataset(original_dir, new_dir, max_size, verbose):
 
 
 if __name__ == "__main__":
+    
     parser = argparse.ArgumentParser()
     parser.add_argument('--input_dir', '-i', type=str, default='deepFruits_dataset', help='original deepFruits dataset directory (defaults to "deepruits_dataset")')
     parser.add_argument('--output_dir', '-o', type=str, default='deepFruits_for_training', help='new directory name for the prepared deepFruits dataset (defaults to "deepFruits_for_training")')
