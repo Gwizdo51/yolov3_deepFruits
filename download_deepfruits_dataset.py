@@ -40,7 +40,7 @@ def download_file_from_google_drive(id, destination):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--output_dir', '-o', type=str, default='./', help='directory in which to store the zip file (default to same directory as script')
+    parser.add_argument('--output_dir', '-o', type=str, default='./', help='directory in which to store the zip file (default to same directory as script)')
 
     args = parser.parse_args()
 

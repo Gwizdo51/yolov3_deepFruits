@@ -304,20 +304,46 @@ def perpare_dataset(original_dir_path, new_dir_path, max_size, verbose):
     # add a .yaml file
 
 
+def create_yaml(yaml_path):
+
+    yaml_content = "\n".join([
+        "# train and val data as 1) directory: path/images/, 2) file: path/images.txt, or 3) list: [path1/images/, path2/images/]",
+        "train: ../deepFruits_for_training/images/train/",
+        "val: ../deepFruits_for_training/images/test/",
+        "",
+        "# number of classes",
+        "nc: 7",
+        "",
+        "# class names",
+        "names: [ 'capsicum', 'rockmelon', 'apple', 'avocado', 'mango', 'orange', 'strawberry' ]"
+    ])
+
+    with open(yaml_path, "w", encoding="UTF-8") as f:
+        f.write(yaml_content)
+
+
 if __name__ == "__main__":
     
     parser = argparse.ArgumentParser()
     parser.add_argument('--input_dir', '-i', type=str, default='deepFruits_dataset', help='original deepFruits dataset directory (defaults to "deepruits_dataset")')
-    parser.add_argument('--output_dir', '-o', type=str, default='./', help='directory in which to store the prepared dataset and the yaml file (defaults to current directory)')
+    parser.add_argument('--output_dir', '-o', type=str, default='./', help='directory in which to store the prepared dataset and the YAML file (defaults to current directory)')
     parser.add_argument('--max_size', type=int, default=640, help='maximum height/width of the output images in pixels (defaults to 640)')
     parser.add_argument('--verbose', '-v', action='store_true', help='print advancement')
 
     args = parser.parse_args()
     new_dir_path = Path(args.output_dir) / "deepFruits_for_training"
+    yaml_path = Path(args.output_dir) / "deepFruits.yaml"
 
     if os.path.exists(new_dir_path):
         print("DeepFruits dataset already prepared for training.")
     else:
-        print("preparing dataset ...")
+        print("Preparing dataset ...")
         perpare_dataset(Path(args.input_dir), new_dir_path, args.max_size, args.verbose)
         print("DeepFruits dataset prepared for training.")
+
+    if os.path.exists(yaml_path):
+        print("YAML file already made.")
+    else:
+        print("Making YAML file ...")
+        create_yaml(yaml_path)
+        print("YAML file ready for training.")
