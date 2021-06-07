@@ -2,3 +2,5 @@ deepFruits_dataset/
 deepFruits_for_training/
 yolov3/
 deepFruits_dataset.zip
+deepFruits.yaml
+.ipynb_checkpoints/
