@@ -45,7 +45,7 @@ On pourra alors utiliser detect.py pour effectuer de nouvelles inférences, en u
 
 # Ce que j'ai fait
 
-J'ai entraîné YOLOv3 sur la totalité du dataset, sur 100 epochs. Les nouveaux poids peuvent être téléchargé [ici](https://drive.google.com/drive/folders/1BdsYVVx7YsC8sNsFYzwCFAv82btq0ZHG) (yolov3_deepFruits_100epochs.pt), ou en utilsant "download_deepfruits_dataset.py":
+J'ai entraîné YOLOv3 sur la totalité du dataset, sur 100 epochs. Les nouveaux poids peuvent être téléchargés [ici](https://drive.google.com/drive/folders/1BdsYVVx7YsC8sNsFYzwCFAv82btq0ZHG) (yolov3_deepFruits_100epochs.pt), ou en utilsant "download_deepfruits_dataset.py":
 ```python
 from download_deepfruits_dataset import download_file_from_google_drive
 
