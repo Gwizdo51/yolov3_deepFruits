@@ -33,7 +33,7 @@ chaque fichier image du dossier images est annoté par un fichier texte du même
 ## créer un fichier deepFruits.yaml
 
 ce fichier contiendra:
-- le chemin vers chaque dossier images/train, val et test
+- le chemin vers chaque dossier images (train, val et test)
 - le nombre de classes (ici 7)
 - le nom de chaque classe
 
