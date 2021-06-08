@@ -30,8 +30,6 @@ deepFruits_for_training/
 
 chaque fichier image du dossier images est annoté par un fichier texte du même nom dans le dossier labels. Comme les annotations fournies par le dataset de deepFruits ne sont pas celles que YOLO attend, il faut les réécrire. Il faut également convertir toutes les images en format JPEG, supprimer les images sans leurs annotations et les annotations sans leurs images, et donner des bons nombres au labels (presque tous les fruits sont annotés avec la classe "rockmelon").
 
-## cloner le contenu du github yolov3 dans le dossier actuel
-
 ## créer un fichier deepFruits.yaml
 
 ce fichier contiendra:
@@ -39,24 +37,23 @@ ce fichier contiendra:
 - le nombre de classes (ici 7)
 - le nom de chaque classe
 
-## utiliser train.py avec comme argumet les poids du modèle préentraîné yolov3.pt, et le chemin vers le fichier .yaml créé.
+## cloner le contenu du github yolov3 dans le dossier actuel
+
+## utiliser train.py avec comme arguments les poids du modèle préentraîné yolov3.pt, et le chemin vers le fichier .yaml créé.
 
 On pourra alors utiliser detect.py pour effectuer de nouvelles inférences, en utilisant les nouveaux poids généré par l'entraînement.
 
 # Ce que j'ai fait
 
-Je n'ai pu que commencer le fichier qui permet de générer un nouveau dataset pour YOLO.
+J'ai entraîné YOLOv3 sur la totalité du dataset, sur 100 epochs. Les nouveaux poids peuvent être téléchargé [ici](https://drive.google.com/drive/folders/1BdsYVVx7YsC8sNsFYzwCFAv82btq0ZHG) (yolov3_deepFruits_100epochs.pt), ou en utilsant "download_deepfruits_dataset.py":
+```python
+from download_deepfruits_dataset import download_file_from_google_drive
 
-Il permet de rassembler toutes les images de fruits aux bons endroits (train et test), il les converti en jpeg (librairie Pillow), et extracte les annotations des fichiers test_RGB.txt et train_RGB.txt pour créer un nouveau fichier texte par ligne.
-
-Il me reste à convertir **x1, y1, x2, y2** en **center_x, center_y, width, height**, normalisé de 0 à 1, pour chaque box annotée de chaque image, et à changer le numéro de classe pour certains fruits.
+download_file_from_google_drive("1ij4hEXrvv9158-qxJxXhxl0URHKDnalo", "yolov3_deepFruits_100epochs.pt")
+```
 
 ## Comment l'utiliser
 
-1. cloner le répo github sur votre machine:<br>```git clone https://github.com/Gwizdo51/yolov3_deepFruits.git```
-1. créer un nouvel environnement virtuel, avec **Python 3.8**.
-2. ```pip install -r requirements.txt``` 
-3. copier le contenu du drive de [deepFruits_dataset](https://drive.google.com/drive/folders/1CmsZb1caggLRN7ANfika8WuPiywo4mBb) dans le même dossier.
-4. ```python prepare_deepfruits_for_training.py --input_dir deepFruits_dataset```
+Entraînement avec deepFruits : [1_yolov3_training_on_deepFruits.ipynb](https://github.com/Gwizdo51/yolov3_deepFruits/blob/dev/1_yolov3_training_on_deepFruits.ipynb)
 
-le script va créer un nouveau dossier rassemblant les informations pour l'entraînement de YOLO.
+Tests sur les nouveaux poids : [2_yolov3_testing_new_weights.ipynb](https://github.com/Gwizdo51/yolov3_deepFruits/blob/dev/2_yolov3_testing_new_weights.ipynb)
